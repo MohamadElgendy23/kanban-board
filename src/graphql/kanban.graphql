@@ -1,0 +1,52 @@
+# Boards
+query GetBoards {
+  boards {
+    id
+    name
+  }
+}
+
+mutation CreateBoard($name: String!) {
+  insert_boards_one(object: { name: $name }) {
+    id
+    name
+  }
+}
+
+# Columns
+query GetColumns($boardId: uuid!) {
+  columns(where: { board_id: { _eq: $boardId } }, order_by: { position: asc }) {
+    id
+    name
+    position
+  }
+}
+
+mutation CreateColumn($name: String!, $boardId: uuid!, $position: float8!) {
+  insert_columns_one(
+    object: { name: $name, board_id: $boardId, position: $position }
+  ) {
+    id
+    name
+    position
+  }
+}
+
+# Cards
+query GetCards($columnId: uuid!) {
+  cards(where: { column_id: { _eq: $columnId } }, order_by: { position: asc }) {
+    id
+    content
+    position
+  }
+}
+
+mutation CreateCard($columnId: uuid!, $content: String!, $position: float8!) {
+  insert_cards_one(
+    object: { column_id: $columnId, content: $content, position: $position }
+  ) {
+    id
+    content
+    position
+  }
+}
