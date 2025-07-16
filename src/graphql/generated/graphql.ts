@@ -1,5 +1,5 @@
-/* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+import { gql } from "@apollo/client";
+import * as Apollo from "@apollo/client";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -20,6 +20,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
     };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -30,10 +31,10 @@ export type Scalars = {
   bigint: { input: any; output: any };
   bytea: { input: any; output: any };
   citext: { input: any; output: any };
-  float8: { input: any; output: any };
+  float8: { input: number; output: number };
   jsonb: { input: any; output: any };
   timestamptz: { input: any; output: any };
-  uuid: { input: any; output: any };
+  uuid: { input: string; output: string };
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -6647,7 +6648,7 @@ export type GetBoardsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetBoardsQuery = {
   __typename?: "query_root";
-  boards: Array<{ __typename?: "boards"; id: any; name: string }>;
+  boards: Array<{ __typename?: "boards"; id: string; name: string }>;
 };
 
 export type CreateBoardMutationVariables = Exact<{
@@ -6656,7 +6657,11 @@ export type CreateBoardMutationVariables = Exact<{
 
 export type CreateBoardMutation = {
   __typename?: "mutation_root";
-  insert_boards_one?: { __typename?: "boards"; id: any; name: string } | null;
+  insert_boards_one?: {
+    __typename?: "boards";
+    id: string;
+    name: string;
+  } | null;
 };
 
 export type GetColumnsQueryVariables = Exact<{
@@ -6667,9 +6672,9 @@ export type GetColumnsQuery = {
   __typename?: "query_root";
   columns: Array<{
     __typename?: "columns";
-    id: any;
+    id: string;
     name: string;
-    position: any;
+    position: number;
   }>;
 };
 
@@ -6683,9 +6688,9 @@ export type CreateColumnMutation = {
   __typename?: "mutation_root";
   insert_columns_one?: {
     __typename?: "columns";
-    id: any;
+    id: string;
     name: string;
-    position: any;
+    position: number;
   } | null;
 };
 
@@ -6697,9 +6702,9 @@ export type GetCardsQuery = {
   __typename?: "query_root";
   cards: Array<{
     __typename?: "cards";
-    id: any;
+    id: string;
     content?: string | null;
-    position: any;
+    position: number;
   }>;
 };
 
@@ -6713,463 +6718,406 @@ export type CreateCardMutation = {
   __typename?: "mutation_root";
   insert_cards_one?: {
     __typename?: "cards";
-    id: any;
+    id: string;
     content?: string | null;
-    position: any;
+    position: number;
   } | null;
 };
 
-export const GetBoardsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetBoards" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "boards" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetBoardsQuery, GetBoardsQueryVariables>;
-export const CreateBoardDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "CreateBoard" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "insert_boards_one" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "object" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "name" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "name" },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CreateBoardMutation, CreateBoardMutationVariables>;
-export const GetColumnsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetColumns" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "boardId" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "uuid" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "columns" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "where" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "board_id" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "_eq" },
-                            value: {
-                              kind: "Variable",
-                              name: { kind: "Name", value: "boardId" },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "order_by" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "position" },
-                      value: { kind: "EnumValue", value: "asc" },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "position" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetColumnsQuery, GetColumnsQueryVariables>;
-export const CreateColumnDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "CreateColumn" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "boardId" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "uuid" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "position" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "float8" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "insert_columns_one" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "object" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "name" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "name" },
-                      },
-                    },
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "board_id" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "boardId" },
-                      },
-                    },
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "position" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "position" },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "position" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
+export const GetBoardsDocument = gql`
+  query GetBoards {
+    boards {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useGetBoardsQuery__
+ *
+ * To run a query within a React component, call `useGetBoardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBoardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBoardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetBoardsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetBoardsQuery,
+    GetBoardsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetBoardsQuery, GetBoardsQueryVariables>(
+    GetBoardsDocument,
+    options,
+  );
+}
+export function useGetBoardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetBoardsQuery,
+    GetBoardsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetBoardsQuery, GetBoardsQueryVariables>(
+    GetBoardsDocument,
+    options,
+  );
+}
+export function useGetBoardsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetBoardsQuery, GetBoardsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetBoardsQuery, GetBoardsQueryVariables>(
+    GetBoardsDocument,
+    options,
+  );
+}
+export type GetBoardsQueryHookResult = ReturnType<typeof useGetBoardsQuery>;
+export type GetBoardsLazyQueryHookResult = ReturnType<
+  typeof useGetBoardsLazyQuery
+>;
+export type GetBoardsSuspenseQueryHookResult = ReturnType<
+  typeof useGetBoardsSuspenseQuery
+>;
+export type GetBoardsQueryResult = Apollo.QueryResult<
+  GetBoardsQuery,
+  GetBoardsQueryVariables
+>;
+export const CreateBoardDocument = gql`
+  mutation CreateBoard($name: String!) {
+    insert_boards_one(object: { name: $name }) {
+      id
+      name
+    }
+  }
+`;
+export type CreateBoardMutationFn = Apollo.MutationFunction<
+  CreateBoardMutation,
+  CreateBoardMutationVariables
+>;
+
+/**
+ * __useCreateBoardMutation__
+ *
+ * To run a mutation, you first call `useCreateBoardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBoardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBoardMutation, { data, loading, error }] = useCreateBoardMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateBoardMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateBoardMutation,
+    CreateBoardMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateBoardMutation, CreateBoardMutationVariables>(
+    CreateBoardDocument,
+    options,
+  );
+}
+export type CreateBoardMutationHookResult = ReturnType<
+  typeof useCreateBoardMutation
+>;
+export type CreateBoardMutationResult =
+  Apollo.MutationResult<CreateBoardMutation>;
+export type CreateBoardMutationOptions = Apollo.BaseMutationOptions<
+  CreateBoardMutation,
+  CreateBoardMutationVariables
+>;
+export const GetColumnsDocument = gql`
+  query GetColumns($boardId: uuid!) {
+    columns(
+      where: { board_id: { _eq: $boardId } }
+      order_by: { position: asc }
+    ) {
+      id
+      name
+      position
+    }
+  }
+`;
+
+/**
+ * __useGetColumnsQuery__
+ *
+ * To run a query within a React component, call `useGetColumnsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetColumnsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetColumnsQuery({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useGetColumnsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetColumnsQuery,
+    GetColumnsQueryVariables
+  > &
+    (
+      | { variables: GetColumnsQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetColumnsQuery, GetColumnsQueryVariables>(
+    GetColumnsDocument,
+    options,
+  );
+}
+export function useGetColumnsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetColumnsQuery,
+    GetColumnsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetColumnsQuery, GetColumnsQueryVariables>(
+    GetColumnsDocument,
+    options,
+  );
+}
+export function useGetColumnsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        GetColumnsQuery,
+        GetColumnsQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetColumnsQuery, GetColumnsQueryVariables>(
+    GetColumnsDocument,
+    options,
+  );
+}
+export type GetColumnsQueryHookResult = ReturnType<typeof useGetColumnsQuery>;
+export type GetColumnsLazyQueryHookResult = ReturnType<
+  typeof useGetColumnsLazyQuery
+>;
+export type GetColumnsSuspenseQueryHookResult = ReturnType<
+  typeof useGetColumnsSuspenseQuery
+>;
+export type GetColumnsQueryResult = Apollo.QueryResult<
+  GetColumnsQuery,
+  GetColumnsQueryVariables
+>;
+export const CreateColumnDocument = gql`
+  mutation CreateColumn($name: String!, $boardId: uuid!, $position: float8!) {
+    insert_columns_one(
+      object: { name: $name, board_id: $boardId, position: $position }
+    ) {
+      id
+      name
+      position
+    }
+  }
+`;
+export type CreateColumnMutationFn = Apollo.MutationFunction<
   CreateColumnMutation,
   CreateColumnMutationVariables
 >;
-export const GetCardsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetCards" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "columnId" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "uuid" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "cards" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "where" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "column_id" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "_eq" },
-                            value: {
-                              kind: "Variable",
-                              name: { kind: "Name", value: "columnId" },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "order_by" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "position" },
-                      value: { kind: "EnumValue", value: "asc" },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "content" } },
-                { kind: "Field", name: { kind: "Name", value: "position" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetCardsQuery, GetCardsQueryVariables>;
-export const CreateCardDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "CreateCard" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "columnId" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "uuid" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "content" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "position" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "float8" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "insert_cards_one" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "object" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "column_id" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "columnId" },
-                      },
-                    },
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "content" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "content" },
-                      },
-                    },
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "position" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "position" },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "content" } },
-                { kind: "Field", name: { kind: "Name", value: "position" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CreateCardMutation, CreateCardMutationVariables>;
+
+/**
+ * __useCreateColumnMutation__
+ *
+ * To run a mutation, you first call `useCreateColumnMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateColumnMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createColumnMutation, { data, loading, error }] = useCreateColumnMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      boardId: // value for 'boardId'
+ *      position: // value for 'position'
+ *   },
+ * });
+ */
+export function useCreateColumnMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateColumnMutation,
+    CreateColumnMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateColumnMutation,
+    CreateColumnMutationVariables
+  >(CreateColumnDocument, options);
+}
+export type CreateColumnMutationHookResult = ReturnType<
+  typeof useCreateColumnMutation
+>;
+export type CreateColumnMutationResult =
+  Apollo.MutationResult<CreateColumnMutation>;
+export type CreateColumnMutationOptions = Apollo.BaseMutationOptions<
+  CreateColumnMutation,
+  CreateColumnMutationVariables
+>;
+export const GetCardsDocument = gql`
+  query GetCards($columnId: uuid!) {
+    cards(
+      where: { column_id: { _eq: $columnId } }
+      order_by: { position: asc }
+    ) {
+      id
+      content
+      position
+    }
+  }
+`;
+
+/**
+ * __useGetCardsQuery__
+ *
+ * To run a query within a React component, call `useGetCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCardsQuery({
+ *   variables: {
+ *      columnId: // value for 'columnId'
+ *   },
+ * });
+ */
+export function useGetCardsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetCardsQuery, GetCardsQueryVariables> &
+    ({ variables: GetCardsQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetCardsQuery, GetCardsQueryVariables>(
+    GetCardsDocument,
+    options,
+  );
+}
+export function useGetCardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCardsQuery,
+    GetCardsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetCardsQuery, GetCardsQueryVariables>(
+    GetCardsDocument,
+    options,
+  );
+}
+export function useGetCardsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetCardsQuery, GetCardsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetCardsQuery, GetCardsQueryVariables>(
+    GetCardsDocument,
+    options,
+  );
+}
+export type GetCardsQueryHookResult = ReturnType<typeof useGetCardsQuery>;
+export type GetCardsLazyQueryHookResult = ReturnType<
+  typeof useGetCardsLazyQuery
+>;
+export type GetCardsSuspenseQueryHookResult = ReturnType<
+  typeof useGetCardsSuspenseQuery
+>;
+export type GetCardsQueryResult = Apollo.QueryResult<
+  GetCardsQuery,
+  GetCardsQueryVariables
+>;
+export const CreateCardDocument = gql`
+  mutation CreateCard($columnId: uuid!, $content: String!, $position: float8!) {
+    insert_cards_one(
+      object: { column_id: $columnId, content: $content, position: $position }
+    ) {
+      id
+      content
+      position
+    }
+  }
+`;
+export type CreateCardMutationFn = Apollo.MutationFunction<
+  CreateCardMutation,
+  CreateCardMutationVariables
+>;
+
+/**
+ * __useCreateCardMutation__
+ *
+ * To run a mutation, you first call `useCreateCardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCardMutation, { data, loading, error }] = useCreateCardMutation({
+ *   variables: {
+ *      columnId: // value for 'columnId'
+ *      content: // value for 'content'
+ *      position: // value for 'position'
+ *   },
+ * });
+ */
+export function useCreateCardMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCardMutation,
+    CreateCardMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateCardMutation, CreateCardMutationVariables>(
+    CreateCardDocument,
+    options,
+  );
+}
+export type CreateCardMutationHookResult = ReturnType<
+  typeof useCreateCardMutation
+>;
+export type CreateCardMutationResult =
+  Apollo.MutationResult<CreateCardMutation>;
+export type CreateCardMutationOptions = Apollo.BaseMutationOptions<
+  CreateCardMutation,
+  CreateCardMutationVariables
+>;

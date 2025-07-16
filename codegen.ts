@@ -1,5 +1,4 @@
 import "dotenv/config";
-
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
@@ -14,9 +13,21 @@ const config: CodegenConfig = {
   ],
   documents: ["src/graphql/**/*.graphql"],
   generates: {
-    "./src/graphql/generated/": {
-      preset: "client",
-      plugins: [],
+    "./src/graphql/generated/graphql.ts": {
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+      config: {
+        withHooks: true,
+        withHOC: false,
+        withComponent: false,
+        scalars: {
+          uuid: "string",
+          float8: "number",
+        },
+      },
     },
   },
   hooks: {
